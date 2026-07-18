@@ -21,7 +21,7 @@ workflows:
         BUNDLE_ID: com.hanzadekuruyemis.app
         XCODE_WORKSPACE: "Hanzade Kuruyemiş.xcworkspace"
         XCODE_SCHEME: "Hanzade Kuruyemiş"
-        APP_STORE_APP_ID: "" # App Store Connect'te uygulama oluşturduktan sonra buraya App ID yaz
+        # APP_STORE_APP_ID: App Store Connect'te uygulama oluşturduktan sonra eklenebilir
 
     scripts:
       - name: CocoaPods kur
