@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CD89F888237E9D9200C436A1"
-               BuildableName = "HanzadeKuruyemiş.app"
+               BuildableName = "HanzadeKuruyemis.app"
                BlueprintName = "Hanzade Kuruyemiş"
                ReferencedContainer = "container:Hanzade Kuruyemiş.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CD89F888237E9D9200C436A1"
-            BuildableName = "HanzadeKuruyemiş.app"
+            BuildableName = "HanzadeKuruyemis.app"
             BlueprintName = "Hanzade Kuruyemiş"
             ReferencedContainer = "container:Hanzade Kuruyemiş.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CD89F888237E9D9200C436A1"
-            BuildableName = "HanzadeKuruyemiş.app"
+            BuildableName = "HanzadeKuruyemis.app"
             BlueprintName = "Hanzade Kuruyemiş"
             ReferencedContainer = "container:Hanzade Kuruyemiş.xcodeproj">
          </BuildableReference>

@@ -20,7 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		59333BAA25CFF706003392A4 /* HanzadeKuruyemiş.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HanzadeKuruyemiş.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		59333BAA25CFF706003392A4 /* HanzadeKuruyemis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HanzadeKuruyemis.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		595F239A25CEFBFD0053416C /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = "Hanzade Kuruyemiş/Settings.swift"; sourceTree = "<group>"; };
 		595F239B25CEFBFD0053416C /* Entitlements */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Entitlements; path = "Hanzade Kuruyemiş/Entitlements"; sourceTree = "<group>"; };
 		595F239C25CEFBFD0053416C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "Hanzade Kuruyemiş/Assets.xcassets"; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 				CDC0FE252388222B002C8D56 /* Main.storyboard */,
 				595F23A425CEFBFE0053416C /* WebView.swift */,
 				90E46E861CB86F5FAF46BED9 /* Frameworks */,
-				59333BAA25CFF706003392A4 /* HanzadeKuruyemiş.app */,
+				59333BAA25CFF706003392A4 /* HanzadeKuruyemis.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -90,7 +90,7 @@
 			);
 			name = "Hanzade Kuruyemiş";
 			productName = "Hanzade Kuruyemiş";
-			productReference = 59333BAA25CFF706003392A4 /* HanzadeKuruyemiş.app */;
+			productReference = 59333BAA25CFF706003392A4 /* HanzadeKuruyemis.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -316,7 +316,7 @@
 				MARKETING_VERSION = 1;
 				CURRENT_PROJECT_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.hanzadekuruyemis.app";
-				PRODUCT_NAME = "HanzadeKuruyemiş";
+				PRODUCT_NAME = "HanzadeKuruyemis";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -343,7 +343,7 @@
 				MARKETING_VERSION = 1;
 				CURRENT_PROJECT_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.hanzadekuruyemis.app";
-				PRODUCT_NAME = "HanzadeKuruyemiş";
+				PRODUCT_NAME = "HanzadeKuruyemis";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
 				SWIFT_VERSION = 5.0;

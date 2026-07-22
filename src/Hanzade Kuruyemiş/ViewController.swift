@@ -48,32 +48,32 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        HanzadeKuruyemiş.webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: nil)
+        HanzadeKuruyemis.webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: nil)
     }
     
     @objc func keyboardWillHide(_ notification: NSNotification) {
-        HanzadeKuruyemiş.webView.setNeedsLayout()
+        HanzadeKuruyemis.webView.setNeedsLayout()
     }
     
     func initWebView() {
-        HanzadeKuruyemiş.webView = createWebView(container: webviewView, WKSMH: self, WKND: self, NSO: self, VC: self)
-        webviewView.addSubview(HanzadeKuruyemiş.webView);
+        HanzadeKuruyemis.webView = createWebView(container: webviewView, WKSMH: self, WKND: self, NSO: self, VC: self)
+        webviewView.addSubview(HanzadeKuruyemis.webView);
         
-        HanzadeKuruyemiş.webView.uiDelegate = self;
+        HanzadeKuruyemis.webView.uiDelegate = self;
         
-        HanzadeKuruyemiş.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+        HanzadeKuruyemis.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
 
         if(pullToRefresh){
             let refreshControl = UIRefreshControl()
             refreshControl.addTarget(self, action: #selector(refreshWebView(_:)), for: UIControl.Event.valueChanged)
-            HanzadeKuruyemiş.webView.scrollView.addSubview(refreshControl)
-            HanzadeKuruyemiş.webView.scrollView.bounces = true
+            HanzadeKuruyemis.webView.scrollView.addSubview(refreshControl)
+            HanzadeKuruyemis.webView.scrollView.bounces = true
         }
 
         if #available(iOS 15.0, *), adaptiveUIStyle {
-            themeObservation = HanzadeKuruyemiş.webView.observe(\.themeColor) { [unowned self] webView, _ in
-                let backgroundColor = HanzadeKuruyemiş.webView.underPageBackgroundColor;
-                let themeColor = HanzadeKuruyemiş.webView.themeColor;
+            themeObservation = HanzadeKuruyemis.webView.observe(\.themeColor) { [unowned self] webView, _ in
+                let backgroundColor = HanzadeKuruyemis.webView.underPageBackgroundColor;
+                let themeColor = HanzadeKuruyemis.webView.themeColor;
                 currentWebViewTheme = themeColor?.isLight() ?? backgroundColor?.isLight() ?? true ? .light : .dark
                 self.overrideUIStyle()
                 view.backgroundColor = themeColor ?? backgroundColor;
@@ -82,7 +82,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     }
 
     @objc func refreshWebView(_ sender: UIRefreshControl) {
-        HanzadeKuruyemiş.webView?.reload()
+        HanzadeKuruyemis.webView?.reload()
         sender.endRefreshing()
     }
 
@@ -113,7 +113,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     
     func overrideUIStyle(toDefault: Bool = false) {
         if #available(iOS 15.0, *), adaptiveUIStyle {
-            if (((htmlIsLoaded && !HanzadeKuruyemiş.webView.isHidden) || toDefault) && self.currentWebViewTheme != .unspecified) {
+            if (((htmlIsLoaded && !HanzadeKuruyemis.webView.isHidden) || toDefault) && self.currentWebViewTheme != .unspecified) {
                 UIApplication
                     .shared
                     .connectedScenes
@@ -130,7 +130,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     }
     
     @objc func loadRootUrl(cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy) {
-        HanzadeKuruyemiş.webView.load(URLRequest(url: SceneDelegate.universalLinkToLaunch ?? SceneDelegate.shortcutLinkToLaunch ?? rootUrl, cachePolicy: cachePolicy))
+        HanzadeKuruyemis.webView.load(URLRequest(url: SceneDelegate.universalLinkToLaunch ?? SceneDelegate.shortcutLinkToLaunch ?? rootUrl, cachePolicy: cachePolicy))
     }
     
     func reloadWebview(
@@ -154,7 +154,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         self.animateConnectionProblem(false)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            HanzadeKuruyemiş.webView.isHidden = false
+            HanzadeKuruyemis.webView.isHidden = false
             self.loadingView.isHidden = true
            
             self.setProgress(0.0, false)
@@ -192,10 +192,10 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 
         if (keyPath == #keyPath(WKWebView.estimatedProgress) &&
-                HanzadeKuruyemiş.webView.isLoading &&
+                HanzadeKuruyemis.webView.isLoading &&
                 !self.loadingView.isHidden &&
                 !self.htmlIsLoaded) {
-                    var progress = Float(HanzadeKuruyemiş.webView.estimatedProgress);
+                    var progress = Float(HanzadeKuruyemis.webView.estimatedProgress);
                     
                     if (progress >= 0.8) { progress = 1.0; };
                     if (progress >= 0.3) { self.animateConnectionProblem(false); }
@@ -228,7 +228,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     }
         
     deinit {
-        HanzadeKuruyemiş.webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+        HanzadeKuruyemis.webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
     }
 }
 
@@ -257,7 +257,7 @@ extension UIColor {
 extension ViewController: WKScriptMessageHandler {
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "print" {
-            printView(webView: HanzadeKuruyemiş.webView)
+            printView(webView: HanzadeKuruyemis.webView)
         }
         if message.name == "push-subscribe" {
             handleSubscribeTouch(message: message)

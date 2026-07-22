@@ -51,7 +51,7 @@ func parseSubscribeMessage(message: WKScriptMessage) -> [SubscribeMessage] {
 func returnPermissionResult(isGranted: Bool) {
     DispatchQueue.main.async {
         let detail = isGranted ? "granted" : "denied"
-        HanzadeKuruyemiş.webView.evaluateJavaScript(
+        HanzadeKuruyemis.webView.evaluateJavaScript(
             "this.dispatchEvent(new CustomEvent('push-permission-request', { detail: '\(detail)' }))"
         )
     }
@@ -59,7 +59,7 @@ func returnPermissionResult(isGranted: Bool) {
 
 func returnPermissionState(state: String) {
     DispatchQueue.main.async {
-        HanzadeKuruyemiş.webView.evaluateJavaScript(
+        HanzadeKuruyemis.webView.evaluateJavaScript(
             "this.dispatchEvent(new CustomEvent('push-permission-state', { detail: '\(state)' }))"
         )
     }
@@ -102,9 +102,9 @@ func handlePushState() {
 }
 
 func checkViewAndEvaluate(event: String, detail: String) {
-    if !HanzadeKuruyemiş.webView.isHidden && !HanzadeKuruyemiş.webView.isLoading {
+    if !HanzadeKuruyemis.webView.isHidden && !HanzadeKuruyemis.webView.isLoading {
         DispatchQueue.main.async {
-            HanzadeKuruyemiş.webView.evaluateJavaScript(
+            HanzadeKuruyemis.webView.evaluateJavaScript(
                 "this.dispatchEvent(new CustomEvent('\(event)', { detail: \(detail) }))"
             )
         }
