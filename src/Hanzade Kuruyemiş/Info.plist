@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Capture Audio by user request</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Track current location by user request</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Capture Video by user request</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -30,22 +24,30 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string></string>
+			<string>com.hanzadekuruyemis.app</string>
 			<key>CFBundleURLSchemes</key>
-			<array />
+			<array/>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.shopping</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Capture Video by user request</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Track current location by user request</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Capture Audio by user request</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -65,10 +67,26 @@
 			</array>
 		</dict>
 	</dict>
-	<key>UIBackgroundModes</key>
+	<key>UIApplicationShortcutItems</key>
 	<array>
-		<string>processing</string>
-		<string>remote-notification</string>
+		<dict>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Ürünler</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>https://www.hanzadekuruyemis.com/urunler?source=ios</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Sepetim</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>https://www.hanzadekuruyemis.com/sepet?source=ios</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Sipariş Takip</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>https://www.hanzadekuruyemis.com/siparis-takip?source=ios</string>
+		</dict>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -76,7 +94,7 @@
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDefault</string>
@@ -98,36 +116,9 @@
 	<true/>
 	<key>WKAppBoundDomains</key>
 	<array>
-		<string>		<string>www.hanzadekuruyemis.com</string>
+		<string>www.hanzadekuruyemis.com</string>
 		<string>hanzadekuruyemis.com</string>
-		<string>blob.vercel-storage.com</string></string>
+		<string>blob.vercel-storage.com</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	</array>
-	<key>	<key>UIApplicationShortcutItems</key>
-	<array>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>https://www.hanzadekuruyemis.com/urunler?source=ios</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Ürünler</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>https://www.hanzadekuruyemis.com/sepet?source=ios</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Sepetim</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>https://www.hanzadekuruyemis.com/siparis-takip?source=ios</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Sipariş Takip</string>
-		</dict>
-	</array></key>
 </dict>
 </plist>

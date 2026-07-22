@@ -141,11 +141,8 @@ extension ViewController: WKUIDelegate, WKDownloadDelegate {
                     return
                 }
                 if (navigationAction.navigationType == .other &&
-                    navigationAction.value(forKey: "syntheticClickType") as! Int == 0 &&
-                    (navigationAction.targetFrame != nil) &&
-                    // no error here, fake warning
-                    (navigationAction.sourceFrame != nil)
-                ) {
+                    navigationAction.value(forKey: "syntheticClickType") as? Int == 0 &&
+                    navigationAction.targetFrame != nil) {
                     decisionHandler(.allow)
                     return
                 }
