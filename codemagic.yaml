@@ -9,8 +9,6 @@ workflows:
 
     environment:
       ios_signing:
-        provisioning_profiles:
-          - hanzade-appstore
         certificates:
           - hanzade-distribution
       vars:
@@ -29,6 +27,10 @@ workflows:
       - name: Code signing ayarla
         script: |
           set -e
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create \
+            --delete-stale-profiles
           cd src
           xcode-project use-profiles \
             --project "Hanzade Kuruyemiş.xcodeproj" \
