@@ -22,22 +22,24 @@ workflows:
 
           # Mevcut distribution sertifikalarini temizle (409 limit hatasini onler)
           echo "Cleaning up existing distribution certificates..."
-          app-store-connect list-certificates \
-            --type IOS_DISTRIBUTION \
-            --json > /tmp/certs.json || echo "[]" > /tmp/certs.json
+          app-store-connect list-certificates --type DISTRIBUTION --json > /tmp/certs1.json || echo "[]" > /tmp/certs1.json
+          app-store-connect list-certificates --type IOS_DISTRIBUTION --json > /tmp/certs2.json || echo "[]" > /tmp/certs2.json
 
           python3 - <<'PYEOF'
           import json, subprocess
-          try:
-              with open("/tmp/certs.json") as f:
-                  certs = json.load(f)
-          except Exception:
-              certs = []
-          for c in certs:
-              cid = c.get("id")
-              if cid:
-                  print("Deleting certificate:", cid)
-                  subprocess.run(["app-store-connect", "delete-certificate", cid], check=False)
+          seen = set()
+          for path in ("/tmp/certs1.json", "/tmp/certs2.json"):
+              try:
+                  with open(path) as f:
+                      certs = json.load(f)
+              except Exception:
+                  certs = []
+              for c in certs:
+                  cid = c.get("id")
+                  if cid and cid not in seen:
+                      seen.add(cid)
+                      print("Deleting certificate:", cid)
+                      subprocess.run(["app-store-connect", "delete-certificate", cid], check=False)
           PYEOF
 
           CERT_KEY_PATH="$HOME/cert_key.pem"
