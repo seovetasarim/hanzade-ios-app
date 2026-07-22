@@ -20,27 +20,29 @@ workflows:
           set -e
           keychain initialize
 
-          # Mevcut distribution sertifikalarini temizle (409 limit hatasini onler)
-          echo "=== Cleaning up existing distribution certificates ==="
-          for CTYPE in DISTRIBUTION IOS_DISTRIBUTION; do
-            app-store-connect list-certificates --type "$CTYPE" --json 2>/dev/null > /tmp/certs.json || echo "[]" > /tmp/certs.json
-            echo "--- type: $CTYPE ---"
-            IDS=$(python3 -c "import json; d=json.load(open('/tmp/certs.json')); print('\n'.join(c.get('id','') for c in d))" 2>/dev/null || true)
-            for CID in $IDS; do
-              if [ -n "$CID" ]; then
-                echo "Deleting certificate: $CID"
-                app-store-connect delete-certificate "$CID" || echo "  (could not delete $CID)"
-              fi
-            done
-          done
-
           CERT_KEY_PATH="$HOME/cert_key.pem"
-          openssl genrsa -out "$CERT_KEY_PATH" 2048
+
+          if [ -n "$CERT_KEY_BASE64" ]; then
+            echo "=== Reusing STORED certificate private key (stable cert) ==="
+            echo "$CERT_KEY_BASE64" | base64 --decode > "$CERT_KEY_PATH" 2>/dev/null || echo "$CERT_KEY_BASE64" | base64 -D > "$CERT_KEY_PATH"
+          else
+            echo "=== BOOTSTRAP: generating a NEW private key ==="
+            openssl genrsa -out "$CERT_KEY_PATH" 2048
+            echo ""
+            echo "################################################################"
+            echo "# COPY the single line between the markers below and save it as #"
+            echo "# a SECURE environment variable named  CERT_KEY_BASE64          #"
+            echo "################################################################"
+            echo "-----CERT_KEY_BASE64_START-----"
+            base64 < "$CERT_KEY_PATH" | tr -d '\n'
+            echo ""
+            echo "-----CERT_KEY_BASE64_END-----"
+            echo "################################################################"
+          fi
 
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create \
-            --delete-stale-profiles \
             --certificate-key=@file:"$CERT_KEY_PATH"
 
           keychain add-certificates
