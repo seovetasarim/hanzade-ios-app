@@ -67,30 +67,40 @@ workflows:
         script: |
           set +e
           cd src
-          echo "=================== ARCHIVE app (unzip YOK) ==================="
-          ARCHIVE=$(find "$HOME/Library/Developer/Xcode/Archives" build/ios -name "*.xcarchive" 2>/dev/null | head -n 1)
-          echo "ARCHIVE: $ARCHIVE"
+          ARCHIVE=$(find build/ios "$HOME/Library/Developer/Xcode/Archives" -name "*.xcarchive" 2>/dev/null | head -n 1)
           ARCHAPP=$(ls -d "$ARCHIVE"/Products/Applications/*.app 2>/dev/null | head -n 1)
           echo "ARCHIVE APP: $ARCHAPP"
-          echo "--- verify archive app (strict) ---"
-          codesign --verify --strict --verbose=4 "$ARCHAPP" 2>&1
-          echo "--- archive app bundle icerik listesi ---"
-          find "$ARCHAPP" -maxdepth 2 2>&1
-          echo "=================== IPA (unzip) ==================="
-          IPA=$(ls build/ios/ipa/*.ipa | head -n 1)
-          echo "IPA: $IPA"
-          WORK=$(mktemp -d)
-          unzip -q "$IPA" -d "$WORK"
-          APP=$(ls -d "$WORK"/Payload/*.app | head -n 1)
-          echo "APP: $APP"
-          echo "--- codesign -dvvv ---"
-          codesign -dvvv "$APP" 2>&1
-          echo "--- codesign verify (strict, deep) ---"
-          codesign --verify --deep --strict --verbose=4 "$APP" 2>&1
-          echo "--- IPA app bundle icerik listesi ---"
-          find "$APP" -maxdepth 2 2>&1
-          echo "--- entitlements ---"
-          codesign -d --entitlements :- "$APP" 2>&1
+          echo "=================== verify verbose ==================="
+          codesign --verify --verbose=4 "$ARCHAPP" 2>&1
+          echo "=================== SEALED vs ACTUAL karsilastirma ==================="
+          python3 - "$ARCHAPP" <<'PYEOF'
+          import sys, plistlib, os
+          app = sys.argv[1]
+          cr = os.path.join(app, "_CodeSignature", "CodeResources")
+          with open(cr, "rb") as f:
+              d = plistlib.load(f)
+          sealed = set()
+          for key in ("files", "files2"):
+              for k in d.get(key, {}).keys():
+                  sealed.add(k)
+          actual = set()
+          for root, dirs, files in os.walk(app):
+              for fn in files:
+                  rel = os.path.relpath(os.path.join(root, fn), app)
+                  if rel.startswith("_CodeSignature"):
+                      continue
+                  actual.add(rel)
+          print("SEALED count:", len(sealed), " ACTUAL count:", len(actual))
+          print("--- MUHURLU ama DISKTE YOK (missing) ---")
+          for x in sorted(sealed - actual):
+              print("   MISSING:", x)
+          print("--- DISKTE var ama MUHURSUZ (extra) ---")
+          for x in sorted(actual - sealed):
+              print("   EXTRA:", x)
+          PYEOF
+          echo "=================== Info.plist icon ayarlari ==================="
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIcons" "$ARCHAPP/Info.plist" 2>&1
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconFiles" "$ARCHAPP/Info.plist" 2>&1
           echo "=================== DONE ==================="
 
     artifacts:
