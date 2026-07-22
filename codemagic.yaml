@@ -8,9 +8,6 @@ workflows:
       app_store_connect: Codemagic
 
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.hanzadekuruyemis.app
       vars:
         BUNDLE_ID: com.hanzadekuruyemis.app
         APPLE_TEAM_ID: H8Z7YGN6J5
@@ -27,6 +24,19 @@ workflows:
       - name: Code signing ayarla
         script: |
           set -e
+          keychain initialize
+
+          CERT_KEY_PATH="$HOME/cert_key.pem"
+          openssl genrsa -out "$CERT_KEY_PATH" 2048
+
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create \
+            --delete-stale-profiles \
+            --certificate-key=@file:"$CERT_KEY_PATH"
+
+          keychain add-certificates
+
           cd src
           xcode-project use-profiles \
             --project "Hanzade Kuruyemiş.xcodeproj" \
