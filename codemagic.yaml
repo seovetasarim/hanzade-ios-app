@@ -11,16 +11,10 @@ workflows:
       vars:
         BUNDLE_ID: com.hanzadekuruyemis.app
         APPLE_TEAM_ID: H8Z7YGN6J5
-        XCODE_WORKSPACE: "Hanzade Kuruyemiş.xcworkspace"
+        XCODE_PROJECT: "Hanzade Kuruyemiş.xcodeproj"
         XCODE_SCHEME: "Hanzade Kuruyemiş"
 
     scripts:
-      - name: CocoaPods kur
-        script: |
-          set -e
-          cd src
-          pod install
-
       - name: Code signing ayarla
         script: |
           set -e
@@ -47,7 +41,7 @@ workflows:
           set -e
           cd src
           xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
+            --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME" \
             --config "Release"
 
