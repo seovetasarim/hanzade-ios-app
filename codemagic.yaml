@@ -26,17 +26,21 @@ workflows:
           set -e
           keychain initialize
 
-          CERT_KEY_PATH="$HOME/cert_key.pem"
           if [ -n "${CERTIFICATE_PRIVATE_KEY:-}" ]; then
+            CERT_KEY_PATH="$HOME/cert_key.pem"
             printf '%s\n' "$CERTIFICATE_PRIVATE_KEY" > "$CERT_KEY_PATH"
+            app-store-connect fetch-signing-files "$BUNDLE_ID" \
+              --type IOS_APP_STORE \
+              --create \
+              --delete-stale-profiles \
+              --certificate-key=@file:"$CERT_KEY_PATH"
           else
-            openssl genrsa -out "$CERT_KEY_PATH" 2048
+            app-store-connect fetch-signing-files "$BUNDLE_ID" \
+              --type IOS_APP_STORE \
+              --create \
+              --delete-stale-profiles
           fi
 
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create \
-            --certificate-key=@file:"$CERT_KEY_PATH"
           keychain add-certificates
 
           PROFILE=$(find "$HOME/Library/MobileDevice/Provisioning Profiles" \
