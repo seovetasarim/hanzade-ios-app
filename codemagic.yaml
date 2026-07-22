@@ -17,20 +17,37 @@ workflows:
     scripts:
       - name: CocoaPods kur
         script: |
+          set -e
           cd src
           pod install
 
       - name: Code signing ayarla
         script: |
+          set -e
           keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
-          ls "$HOME/Library/MobileDevice/Provisioning Profiles" || true
+
+          PROFILE=$(find "$HOME/Library/MobileDevice/Provisioning Profiles" \
+            "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles" \
+            -name "*.mobileprovision" 2>/dev/null | head -1)
+
+          if [ -z "$PROFILE" ]; then
+            echo "ERROR: Provisioning profile indirilemedi"
+            exit 1
+          fi
+          echo "Profile: $PROFILE"
+
           cd src
-          xcode-project use-profiles --code-signing-setup-verbose-logging
+          xcode-project use-profiles \
+            --project "Hanzade Kuruyemiş.xcodeproj" \
+            --profile "$PROFILE" \
+            --archive-method app-store \
+            --code-signing-setup-verbose-logging
 
       - name: IPA derle
         script: |
+          set -e
           cd src
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
