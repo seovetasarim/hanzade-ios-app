@@ -46,5 +46,7 @@ workflows:
             --config "Release"
 
     artifacts:
+      - src/build/ios/ipa/*.ipa
       - build/ios/ipa/*.ipa
+      - "**/*.ipa"
       - /tmp/xcodebuild_logs/*.log
