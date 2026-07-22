@@ -8,6 +8,8 @@ workflows:
       app_store_connect: Codemagic
 
     environment:
+      groups:
+        - hanzade_signing
       vars:
         BUNDLE_ID: com.hanzadekuruyemis.app
         APPLE_TEAM_ID: H8Z7YGN6J5
