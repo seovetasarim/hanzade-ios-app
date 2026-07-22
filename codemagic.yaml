@@ -23,35 +23,10 @@ workflows:
       - name: Code signing ayarla
         script: |
           keychain initialize
-
-          export BUNDLE_ID_RESOURCE_ID=$(app-store-connect bundle-ids list \
-            --bundle-id-identifier "$BUNDLE_ID" \
-            --strict-match-identifier \
-            --json | python3 -c "import sys,json; data=json.load(sys.stdin); items=data if isinstance(data,list) else data.get('data',[]); print(items[0]['id'])")
-
-          app-store-connect bundle-ids enable-capabilities "$BUNDLE_ID_RESOURCE_ID" \
-            --capability "Push Notifications" "Associated Domains"
-
-          app-store-connect profiles list --type IOS_APP_STORE --json | python3 -c "
-          import sys, json, subprocess, os
-          data = json.load(sys.stdin)
-          items = data if isinstance(data, list) else data.get('data', [])
-          bundle_id_resource = os.environ['BUNDLE_ID_RESOURCE_ID']
-          bundle_id = os.environ['BUNDLE_ID']
-          for profile in items:
-              rel = profile.get('relationships', {}).get('bundleId', {}).get('data', {})
-              name = profile.get('attributes', {}).get('name', '')
-              if rel.get('id') == bundle_id_resource or bundle_id in name:
-                  subprocess.run(
-                      ['app-store-connect', 'profiles', 'delete', profile['id'], '--ignore-not-found'],
-                      check=False,
-                  )
-          "
-
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
           cd src
-          xcode-project use-profiles --code-signing-setup-verbose-logging
+          xcode-project use-profiles
 
       - name: IPA derle
         script: |
