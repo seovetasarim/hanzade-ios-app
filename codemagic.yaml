@@ -25,13 +25,8 @@ workflows:
           for CTYPE in DISTRIBUTION IOS_DISTRIBUTION; do
             app-store-connect list-certificates --type "$CTYPE" --json 2>/dev/null > /tmp/certs.json || echo "[]" > /tmp/certs.json
             echo "--- type: $CTYPE ---"
-            cat /tmp/certs.json | python3 -c "import sys, json
-try:
-    data = json.load(sys.stdin)
-except Exception:
-    data = []
-for x in data:
-    print(x.get('id',''))" | while read -r CID; do
+            IDS=$(python3 -c "import json; d=json.load(open('/tmp/certs.json')); print('\n'.join(c.get('id','') for c in d))" 2>/dev/null || true)
+            for CID in $IDS; do
               if [ -n "$CID" ]; then
                 echo "Deleting certificate: $CID"
                 app-store-connect delete-certificate "$CID" || echo "  (could not delete $CID)"
