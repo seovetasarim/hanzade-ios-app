@@ -8,6 +8,9 @@ workflows:
       app_store_connect: Codemagic
 
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.hanzadekuruyemis.app
       vars:
         BUNDLE_ID: com.hanzadekuruyemis.app
         APPLE_TEAM_ID: H8Z7YGN6J5
@@ -24,41 +27,10 @@ workflows:
       - name: Code signing ayarla
         script: |
           set -e
-          keychain initialize
-
-          if [ -n "${CERTIFICATE_PRIVATE_KEY:-}" ]; then
-            CERT_KEY_PATH="$HOME/cert_key.pem"
-            printf '%s\n' "$CERTIFICATE_PRIVATE_KEY" > "$CERT_KEY_PATH"
-            app-store-connect fetch-signing-files "$BUNDLE_ID" \
-              --type IOS_APP_STORE \
-              --create \
-              --delete-stale-profiles \
-              --certificate-key=@file:"$CERT_KEY_PATH"
-          else
-            app-store-connect fetch-signing-files "$BUNDLE_ID" \
-              --type IOS_APP_STORE \
-              --create \
-              --delete-stale-profiles
-          fi
-
-          keychain add-certificates
-
-          PROFILE=$(find "$HOME/Library/MobileDevice/Provisioning Profiles" \
-            "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles" \
-            -name "*.mobileprovision" 2>/dev/null | head -1)
-
-          if [ -z "$PROFILE" ]; then
-            echo "ERROR: Provisioning profile indirilemedi"
-            exit 1
-          fi
-          echo "Profile: $PROFILE"
-
           cd src
           xcode-project use-profiles \
             --project "Hanzade Kuruyemiş.xcodeproj" \
-            --profile "$PROFILE" \
-            --archive-method app-store \
-            --code-signing-setup-verbose-logging
+            --archive-method app-store
 
       - name: IPA derle
         script: |
