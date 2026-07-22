@@ -20,6 +20,15 @@ workflows:
           cd src
           pod install
 
+      - name: App ID capabilities ayarla
+        script: |
+          BUNDLE_ID_RESOURCE_ID=$(app-store-connect bundle-ids list \
+            --bundle-id-identifier "$BUNDLE_ID" \
+            --strict-match-identifier \
+            --json | python3 -c "import sys,json; data=json.load(sys.stdin); items=data if isinstance(data,list) else data.get('data',[]); print(items[0]['id'])")
+          app-store-connect bundle-ids enable-capabilities "$BUNDLE_ID_RESOURCE_ID" \
+            --capability "Push Notifications" "Associated Domains" || true
+
       - name: Code signing ayarla
         script: |
           keychain initialize
