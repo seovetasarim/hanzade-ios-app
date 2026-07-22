@@ -63,6 +63,38 @@ workflows:
             --scheme "$XCODE_SCHEME" \
             --config "Release"
 
+      - name: Imzayi dogrula (diagnostic)
+        script: |
+          set +e
+          cd src
+          IPA=$(ls build/ios/ipa/*.ipa | head -n 1)
+          echo "IPA: $IPA"
+          WORK=$(mktemp -d)
+          unzip -q "$IPA" -d "$WORK"
+          APP=$(ls -d "$WORK"/Payload/*.app | head -n 1)
+          echo "APP: $APP"
+          echo "=================== codesign -dvvv ==================="
+          codesign -dvvv "$APP" 2>&1
+          echo "=================== codesign verify (strict) ==================="
+          codesign --verify --deep --strict --verbose=4 "$APP" 2>&1
+          echo "=================== entitlements ==================="
+          codesign -d --entitlements :- "$APP" 2>&1
+          echo "=================== embedded.mobileprovision ==================="
+          security cms -D -i "$APP/embedded.mobileprovision" > "$WORK/profile.plist" 2>/dev/null
+          echo "--- Profile Name ---"
+          /usr/libexec/PlistBuddy -c "Print :Name" "$WORK/profile.plist" 2>&1
+          echo "--- ProvisionedDevices (App Store profilinde OLMAMALI) ---"
+          /usr/libexec/PlistBuddy -c "Print :ProvisionedDevices" "$WORK/profile.plist" 2>&1 | head -n 3
+          echo "--- get-task-allow (false/yok olmali) ---"
+          /usr/libexec/PlistBuddy -c "Print :Entitlements:get-task-allow" "$WORK/profile.plist" 2>&1
+          echo "--- application-identifier ---"
+          /usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" "$WORK/profile.plist" 2>&1
+          echo "--- Profildeki sertifika (DeveloperCertificates) ---"
+          /usr/libexec/PlistBuddy -c "Print :DeveloperCertificates:0" "$WORK/profile.plist" 2>/dev/null | head -c 60; echo ""
+          echo "=================== export_options.plist ==================="
+          cat "$HOME/export_options.plist" 2>/dev/null
+          echo "=================== DONE ==================="
+
     artifacts:
       - src/build/ios/ipa/*.ipa
       - build/ios/ipa/*.ipa
