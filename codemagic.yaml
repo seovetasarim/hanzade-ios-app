@@ -9,8 +9,10 @@ workflows:
 
     environment:
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.hanzadekuruyemis.app
+        provisioning_profiles:
+          - hanzade-appstore
+        certificates:
+          - hanzade-distribution
       vars:
         BUNDLE_ID: com.hanzadekuruyemis.app
         APPLE_TEAM_ID: H8Z7YGN6J5
