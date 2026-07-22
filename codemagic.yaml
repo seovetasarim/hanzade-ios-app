@@ -23,7 +23,7 @@ workflows:
       - name: Code signing ayarla
         script: |
           keychain initialize
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create --delete-stale-profiles
           keychain add-certificates
           cd src
           xcode-project use-profiles --code-signing-setup-verbose-logging
