@@ -8,11 +8,9 @@ workflows:
       app_store_connect: Codemagic
 
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.hanzadekuruyemis.app
       vars:
         BUNDLE_ID: com.hanzadekuruyemis.app
+        APPLE_TEAM_ID: H8Z7YGN6J5
         XCODE_WORKSPACE: "Hanzade Kuruyemiş.xcworkspace"
         XCODE_SCHEME: "Hanzade Kuruyemiş"
 
@@ -28,7 +26,7 @@ workflows:
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
           cd src
-          xcode-project use-profiles
+          xcode-project use-profiles --code-signing-setup-verbose-logging
 
       - name: IPA derle
         script: |
