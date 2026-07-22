@@ -21,26 +21,23 @@ workflows:
           keychain initialize
 
           # Mevcut distribution sertifikalarini temizle (409 limit hatasini onler)
-          echo "Cleaning up existing distribution certificates..."
-          app-store-connect list-certificates --type DISTRIBUTION --json > /tmp/certs1.json || echo "[]" > /tmp/certs1.json
-          app-store-connect list-certificates --type IOS_DISTRIBUTION --json > /tmp/certs2.json || echo "[]" > /tmp/certs2.json
-
-          python3 - <<'PYEOF'
-          import json, subprocess
-          seen = set()
-          for path in ("/tmp/certs1.json", "/tmp/certs2.json"):
-              try:
-                  with open(path) as f:
-                      certs = json.load(f)
-              except Exception:
-                  certs = []
-              for c in certs:
-                  cid = c.get("id")
-                  if cid and cid not in seen:
-                      seen.add(cid)
-                      print("Deleting certificate:", cid)
-                      subprocess.run(["app-store-connect", "delete-certificate", cid], check=False)
-          PYEOF
+          echo "=== Cleaning up existing distribution certificates ==="
+          for CTYPE in DISTRIBUTION IOS_DISTRIBUTION; do
+            app-store-connect list-certificates --type "$CTYPE" --json 2>/dev/null > /tmp/certs.json || echo "[]" > /tmp/certs.json
+            echo "--- type: $CTYPE ---"
+            cat /tmp/certs.json | python3 -c "import sys, json
+try:
+    data = json.load(sys.stdin)
+except Exception:
+    data = []
+for x in data:
+    print(x.get('id',''))" | while read -r CID; do
+              if [ -n "$CID" ]; then
+                echo "Deleting certificate: $CID"
+                app-store-connect delete-certificate "$CID" || echo "  (could not delete $CID)"
+              fi
+            done
+          done
 
           CERT_KEY_PATH="$HOME/cert_key.pem"
           openssl genrsa -out "$CERT_KEY_PATH" 2048
@@ -72,3 +69,8 @@ workflows:
       - build/ios/ipa/*.ipa
       - "**/*.ipa"
       - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
