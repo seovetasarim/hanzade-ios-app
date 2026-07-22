@@ -20,6 +20,26 @@ workflows:
           set -e
           keychain initialize
 
+          # Mevcut distribution sertifikalarini temizle (409 limit hatasini onler)
+          echo "Cleaning up existing distribution certificates..."
+          app-store-connect list-certificates \
+            --type IOS_DISTRIBUTION \
+            --json > /tmp/certs.json || echo "[]" > /tmp/certs.json
+
+          python3 - <<'PYEOF'
+          import json, subprocess
+          try:
+              with open("/tmp/certs.json") as f:
+                  certs = json.load(f)
+          except Exception:
+              certs = []
+          for c in certs:
+              cid = c.get("id")
+              if cid:
+                  print("Deleting certificate:", cid)
+                  subprocess.run(["app-store-connect", "delete-certificate", cid], check=False)
+          PYEOF
+
           CERT_KEY_PATH="$HOME/cert_key.pem"
           openssl genrsa -out "$CERT_KEY_PATH" 2048
 
