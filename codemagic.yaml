@@ -1,17 +1,11 @@
-# Codemagic — Mac olmadan .ipa üretmek için
-# Kurulum: https://codemagic.io (ücretsiz plan var)
-#
-# 1) codemagic.io → Sign up
-# 2) Applications → Add application → Git veya zip yükle
-# 3) Apple Developer bağla (Team settings → Integrations → Apple Developer Portal)
-# 4) Bu yaml dosyasını repo köküne koy veya Codemagic UI'dan workflow oluştur
-# 5) Start build → bitince .ipa indir veya doğrudan App Store Connect'e gönder
-
 workflows:
   hanzade-ios-ipa:
     name: Hanzade Kuruyemiş iOS IPA
     max_build_duration: 60
     instance_type: mac_mini_m2
+
+    integrations:
+      app_store_connect: Codemagic
 
     environment:
       ios_signing:
@@ -21,13 +15,20 @@ workflows:
         BUNDLE_ID: com.hanzadekuruyemis.app
         XCODE_WORKSPACE: "Hanzade Kuruyemiş.xcworkspace"
         XCODE_SCHEME: "Hanzade Kuruyemiş"
-        # APP_STORE_APP_ID: App Store Connect'te uygulama oluşturduktan sonra eklenebilir
 
     scripts:
       - name: CocoaPods kur
         script: |
           cd src
           pod install
+
+      - name: Code signing ayarla
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          cd src
+          xcode-project use-profiles
 
       - name: IPA derle
         script: |
@@ -40,5 +41,3 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-
-    # Apple Active olunca publishing eklenebilir (App Store Connect API key gerekir)
